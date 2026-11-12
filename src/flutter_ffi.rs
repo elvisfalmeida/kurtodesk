@@ -66,6 +66,11 @@ fn initialize(app_dir: &str, custom_client_config: &str) {
             "hbbr.ux.net.br".to_owned(),
         );
     }
+    // Fork kurtodesk: nome do app (titulo da janela, pasta de config e
+    // cliente customizado). A pasta de config muda de %AppData%\RustDesk
+    // para %AppData%\Kurtodesk: instalacao limpa, sem herdar a config do
+    // RustDesk padrao; a chave do servidor precisa ser informada uma vez.
+    *config::APP_NAME.write().unwrap() = "Kurtodesk".to_owned();
     #[cfg(target_os = "android")]
     {
         // flexi_logger can't work when android_logger initialized.
