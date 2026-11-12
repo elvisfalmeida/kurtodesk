@@ -53,6 +53,19 @@ fn initialize(app_dir: &str, custom_client_config: &str) {
     } else {
         crate::read_custom_client(custom_client_config);
     }
+    // Fork kurtodesk: servidor proprio por padrao.
+    // O global_init() so e chamado no mobile (flutter_ffi so o chama em
+    // Android/iOS), entao no desktop o servidor embutido nunca era aplicado
+    // e o cliente caia no servidor publico do RustDesk. Exe e opcao manual
+    // continuam com prioridade maior (Config::get_rendezvous_server /
+    // RendezvousMediator::get_relay_server).
+    *config::PROD_RENDEZVOUS_SERVER.write().unwrap() = "hbbs.ux.net.br".to_owned();
+    if config::Config::get_option(keys::OPTION_RELAY_SERVER).is_empty() {
+        config::Config::set_option(
+            keys::OPTION_RELAY_SERVER.to_owned(),
+            "hbbr.ux.net.br".to_owned(),
+        );
+    }
     #[cfg(target_os = "android")]
     {
         // flexi_logger can't work when android_logger initialized.
