@@ -121,6 +121,10 @@ impl Drop for SimpleCallOnReturn {
 }
 
 pub fn global_init() -> bool {
+    // Fork kurtodesk: servidor proprio por padrao. Nome do exe e a
+    // opcao custom-rendezvous-server continuam com prioridade maior
+    // (get_custom_rendezvous_server / Config::get_rendezvous_server).
+    *config::PROD_RENDEZVOUS_SERVER.write().unwrap() = "hbbs.ux.net.br".to_owned();
     #[cfg(all(target_os = "linux", feature = "drm"))]
     crate::platform::linux::dispatch_wayland_display_probe();
     #[cfg(target_os = "linux")]

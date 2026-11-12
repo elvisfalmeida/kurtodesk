@@ -650,6 +650,26 @@ List<TTextMenu> toolbarControls(BuildContext context, String id, FFI ffi) {
           actionId: kShortcutActionSendCtrlAltDel),
     );
   }
+  // winR — fork interno: Win+R sintetizado (Meta + R) pelo caminho
+  // Legacy existente, sem depender da tecla Win fisica do tecnico.
+  if (isDefaultConn &&
+      !ffiModel.viewOnly &&
+      ffiModel.keyboard &&
+      pi.platform == kPeerPlatformWindows) {
+    v.add(
+      TTextMenu(
+          child: Text(translate('Insert Win + R')),
+          onPressed: () {
+            final inputModel = ffi.inputModel;
+            inputModel.command = true;
+            try {
+              inputModel.inputKey('r', press: true);
+            } finally {
+              inputModel.command = false;
+            }
+          }),
+    );
+  }
   // restart
   if (isDefaultConn &&
       perms['restart'] != false &&
@@ -1072,20 +1092,7 @@ Future<List<TToggleMenu>> toolbarDisplayToggle(
         ffi.qualityMonitorModel.checkShowQualityMonitor(sessionId);
       },
       child: Text(translate('Show quality monitor'))));
-  // mute
-  if (isDefaultConn && perms['audio'] != false) {
-    final option = 'disable-audio';
-    final value =
-        bind.sessionGetToggleOptionSync(sessionId: sessionId, arg: option);
-    v.add(TToggleMenu(
-        value: value,
-        actionId: kShortcutActionToggleMute,
-        onChanged: (value) {
-          if (value == null) return;
-          bind.sessionToggleOption(sessionId: sessionId, value: option);
-        },
-        child: Text(translate('Mute'))));
-  }
+  // Fork interno: audio fora do escopo; botao Mute removido.
   // file copy and paste
   // If the version is less than 1.2.4, file copy and paste is supported on Windows only.
   final isSupportIfPeer_1_2_3 = versionCmp(pi.version, '1.2.4') < 0 &&

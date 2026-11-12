@@ -3490,7 +3490,8 @@ impl LoginConfigHandler {
         } else if name == keys::OPTION_ENABLE_FILE_COPY_PASTE {
             self.config.enable_file_copy_paste.v
         } else if name == "disable-audio" {
-            self.config.disable_audio.v
+            // Fork interno: audio fora do escopo, sempre desativado.
+            true
         } else if name == "disable-clipboard" {
             self.config.disable_clipboard.v
         } else if name == "show-quality-monitor" {
